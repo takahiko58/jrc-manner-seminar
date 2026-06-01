@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JRC ビジネスマナー対抗戦</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0d;
+    --surface: #1a1a1a;
+    --surface2: #242424;
+    --border: #2e2e2e;
+    --accent: #e8c840;
+    --accent2: #e85540;
+    --text: #f0ede6;
+    --text-muted: #888;
+    --teal: #3ecfaa;
+    --purple: #9b7fe8;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans JP', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* Header */
+  .header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+  }
+  .header-sub {
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    margin-top: 2px;
+  }
+  .pattern-count {
+    font-size: 12px;
+    color: var(--text-muted);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 4px 12px;
+  }
+  .pattern-count span { color: var(--accent); font-weight: 700; }
+
+  /* Main */
+  .main { max-width: 680px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+  /* Cards grid */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 1.25rem;
+  }
+  .axis-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s;
+    min-height: 110px;
+    display: flex;
+    flex-direction: column;
+  }
+  .axis-card.lit { border-color: var(--accent); }
+  .axis-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .c1::before { background: #378ADD; }
+  .c2::before { background: var(--purple); }
+  .c3::before { background: var(--teal); }
+
+  .axis-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .c1 .axis-label { color: #378ADD; }
+  .c2 .axis-label { color: var(--purple); }
+  .c3 .axis-label { color: var(--teal); }
+
+  .axis-value {
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.5;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .axis-value.empty { color: var(--text-muted); font-size: 12px; }
+  .badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+    margin-top: 6px;
+    letter-spacing: 0.05em;
+    width: fit-content;
+  }
+  .b-blue { background: rgba(55,138,221,0.15); color: #6ab4ff; border: 1px solid rgba(55,138,221,0.3); }
+  .b-purple { background: rgba(155,127,232,0.15); color: #b89fff; border: 1px solid rgba(155,127,232,0.3); }
+  .b-teal { background: rgba(62,207,170,0.15); color: #5ee8c5; border: 1px solid rgba(62,207,170,0.3); }
+  .b-coral { background: rgba(232,85,64,0.15); color: #ff8a78; border: 1px solid rgba(232,85,64,0.3); }
+  .b-amber { background: rgba(232,200,64,0.15); color: #ffd84d; border: 1px solid rgba(232,200,64,0.3); }
+
+  /* Scenario result */
+  .result-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+    display: none;
+    position: relative;
+    overflow: hidden;
+  }
+  .result-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--accent);
+  }
+  .result-card.show { display: block; animation: fadeIn 0.3s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+  .result-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .result-text {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1.7;
+  }
+
+  /* Spin button */
+  .spin-btn {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    background: var(--accent);
+    color: #0d0d0d;
+    border: none;
+    border-radius: 12px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 0.12em;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+    margin-bottom: 10px;
+  }
+  .spin-btn:hover { background: #f0d454; }
+  .spin-btn:active { transform: scale(0.98); }
+
+  /* Sub buttons */
+  .sub-btns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 1.5rem;
+  }
+  .sub-btn {
+    padding: 10px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 12px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: 'Noto Sans JP', sans-serif;
+  }
+  .sub-btn:hover { border-color: #444; color: var(--text); background: var(--surface2); }
+
+  /* Judge section */
+  .section-title {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+  }
+  .judge-area {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+    display: none;
+  }
+  .judge-area.show { display: block; animation: fadeIn 0.3s ease; }
+
+  .team-select {
+    width: 100%;
+    padding: 10px 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 14px;
+    color: var(--text);
+    margin-bottom: 12px;
+    font-family: 'Noto Sans JP', sans-serif;
+  }
+  .team-select:focus { outline: none; border-color: var(--accent); }
+
+  .score-btns {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+  }
+  .score-btn {
+    padding: 10px 4px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.15s;
+    font-family: 'Noto Sans JP', sans-serif;
+    color: var(--text);
+  }
+  .score-btn span { display: block; font-size: 9px; font-weight: 400; color: var(--text-muted); margin-top: 2px; }
+  .score-btn.s5:hover { background: rgba(62,207,170,0.2); border-color: var(--teal); color: var(--teal); }
+  .score-btn.s4:hover { background: rgba(62,207,170,0.1); border-color: #7fd4b8; color: #7fd4b8; }
+  .score-btn.s3:hover { background: rgba(232,200,64,0.1); border-color: var(--accent); color: var(--accent); }
+  .score-btn.s2:hover { background: rgba(232,85,64,0.1); border-color: #ff8a78; color: #ff8a78; }
+  .score-btn.s1:hover { background: rgba(232,85,64,0.2); border-color: var(--accent2); color: var(--accent2); }
+
+  /* Stats */
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 1.5rem;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px;
+    text-align: center;
+  }
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+  }
+  .stat-label { font-size: 10px; color: var(--text-muted); margin-top: 2px; letter-spacing: 0.05em; }
+
+  /* History */
+  .history-area {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem;
+    display: none;
+  }
+  .history-area.show { display: block; }
+  .history-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .history-item:last-child { border-bottom: none; }
+  .history-team { color: var(--text); font-weight: 500; white-space: nowrap; }
+  .history-score { font-family: 'Bebas Neue', sans-serif; font-size: 20px; white-space: nowrap; }
+  .hs5 { color: var(--teal); }
+  .hs4 { color: #7fd4b8; }
+  .hs3 { color: var(--accent); }
+  .hs2 { color: #ff8a78; }
+  .hs1 { color: var(--accent2); }
+
+  /* Divider */
+  .divider { border: none; border-top: 1px solid var(--border); margin: 1.25rem 0; }
+
+  /* Spinning animation */
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+  .spinning .axis-value { animation: pulse 0.4s ease infinite; }
+
+  /* Responsive */
+  @media (max-width: 480px) {
+    .card-grid { grid-template-columns: 1fr; gap: 8px; }
+    .main { padding: 1rem; }
+    .header { padding: 1rem; }
+    .header-title { font-size: 22px; }
+    .score-btns { grid-template-columns: repeat(5, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="header-title">JRC MANNER BATTLE</div>
+    <div class="header-sub">ビジネスマナー ロールプレイ対抗戦</div>
+  </div>
+  <div class="pattern-count"><span>180</span> パターン</div>
+</div>
+
+<div class="main">
+
+  <!-- Axis Cards -->
+  <div class="card-grid" id="cardGrid">
+    <div class="axis-card c1" id="card0">
+      <div class="axis-label">📍 場所・相手</div>
+      <div class="axis-value empty" id="v0">ボタンを押してスタート</div>
+    </div>
+    <div class="axis-card c2" id="card1">
+      <div class="axis-label">🤝 関係性</div>
+      <div class="axis-value empty" id="v1">—</div>
+    </div>
+    <div class="axis-card c3" id="card2">
+      <div class="axis-label">🎯 目的・ミッション</div>
+      <div class="axis-value empty" id="v2">—</div>
+    </div>
+  </div>
+
+  <!-- Result -->
+  <div class="result-card" id="resultCard">
+    <div class="result-label">▶ 今回のシナリオ</div>
+    <div class="result-text" id="resultText"></div>
+  </div>
+
+  <!-- Spin -->
+  <button class="spin-btn" onclick="spin()">🎲 シチュエーションを引く</button>
+
+  <!-- Sub buttons -->
+  <div class="sub-btns">
+    <button class="sub-btn" onclick="spinOne(0)">📍 場所だけ変える</button>
+    <button class="sub-btn" onclick="spinOne(1)">🤝 関係性だけ変える</button>
+    <button class="sub-btn" onclick="spinOne(2)">🎯 目的だけ変える</button>
+    <button class="sub-btn" onclick="clearAll()">↺ リセット</button>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-bar">
+    <div class="stat-card">
+      <div class="stat-num" id="cntTotal">0</div>
+      <div class="stat-label">総試行数</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="cntAvg">—</div>
+      <div class="stat-label">平均点</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="cntBest" style="font-size:14px; padding-top:6px;">—</div>
+      <div class="stat-label">最高点チーム</div>
+    </div>
+  </div>
+
+  <!-- Judge -->
+  <div class="judge-area" id="judgeArea">
+    <div class="section-title">⚖️ 審査員採点</div>
+    <select class="team-select" id="teamSelect">
+      <option value="">チームを選択...</option>
+      <option>チーム1：佐々木 × 安藤</option>
+      <option>チーム2：トゥアン × 松井</option>
+      <option>チーム3：岩本 × 木谷</option>
+      <option>チーム4：堀田 × ドン</option>
+      <option>チーム5：吉村 × 鴨志田</option>
+      <option>チーム6：深澤 × 岩沢</option>
+      <option>チーム7：望月 × 中幹</option>
+      <option>チーム8：中智 × 三澤</option>
+    </select>
+    <div class="score-btns">
+      <button class="score-btn s5" onclick="addScore(5)">5<span>完璧</span></button>
+      <button class="score-btn s4" onclick="addScore(4)">4<span>良い</span></button>
+      <button class="score-btn s3" onclick="addScore(3)">3<span>普通</span></button>
+      <button class="score-btn s2" onclick="addScore(2)">2<span>要改善</span></button>
+      <button class="score-btn s1" onclick="addScore(1)">1<span>NG</span></button>
+    </div>
+  </div>
+
+  <!-- History -->
+  <div class="history-area" id="historyArea">
+    <hr class="divider">
+    <div class="section-title">📋 採点履歴</div>
+    <div id="historyList"></div>
+  </div>
+
+</div>
+
+<script>
+const axes = [
+  [
+    {text: "取引先の会社（初訪問）", badge: "社外", cls: "b-blue"},
+    {text: "取引先の会社（既存顧客）", badge: "社外", cls: "b-blue"},
+    {text: "JRC社内（事務所）", badge: "社内", cls: "b-purple"},
+    {text: "現場（工事中）", badge: "現場", cls: "b-amber"},
+    {text: "現場（竣工検査時）", badge: "現場", cls: "b-amber"},
+    {text: "懇親会・食事の場", badge: "非公式", cls: "b-coral"},
+  ],
+  [
+    {text: "初めて会う相手", badge: "初対面", cls: "b-blue"},
+    {text: "事故・トラブルの直後", badge: "緊急", cls: "b-coral"},
+    {text: "久しぶりの再会（1年以上）", badge: "久々", cls: "b-purple"},
+    {text: "毎月会っている顔なじみ", badge: "常連", cls: "b-teal"},
+    {text: "クレームを入れてきた相手", badge: "クレーム", cls: "b-coral"},
+  ],
+  [
+    {text: "JRCのPR・営業提案をする", badge: "営業", cls: "b-teal"},
+    {text: "金額・条件を交渉する", badge: "交渉", cls: "b-purple"},
+    {text: "工事の依頼・受注をお願いする", badge: "受注", cls: "b-blue"},
+    {text: "ミス・事故の謝罪をする", badge: "謝罪", cls: "b-coral"},
+    {text: "ご挨拶・関係構築のみ", badge: "挨拶", cls: "b-amber"},
+    {text: "クレームに対して誠実に対応する", badge: "対応", cls: "b-coral"},
+  ]
+];
+
+let current = [null, null, null];
+let scores = [];
+let totalSpins = 0;
+
+function rand(arr) { return Math.floor(Math.random() * arr.length); }
+
+function render(idx, item) {
+  const el = document.getElementById('v' + idx);
+  const card = document.getElementById('card' + idx);
+  el.innerHTML = item.text + '<br><span class="badge ' + item.cls + '">' + item.badge + '</span>';
+  el.classList.remove('empty');
+  card.classList.add('lit');
+}
+
+function buildScenario() {
+  if (!current[0] || !current[1] || !current[2]) return;
+  const s = '【' + current[0].badge + '】' + current[0].text + ' で、' + current[1].text + '（' + current[1].badge + '）に対して、' + current[2].text;
+  document.getElementById('resultText').textContent = s;
+  document.getElementById('resultCard').classList.add('show');
+  document.getElementById('judgeArea').classList.add('show');
+}
+
+function spin() {
+  totalSpins++;
+  document.getElementById('cntTotal').textContent = totalSpins;
+  const grid = document.getElementById('cardGrid');
+  grid.classList.add('spinning');
+  setTimeout(() => grid.classList.remove('spinning'), 400);
+  for (let i = 0; i < 3; i++) {
+    current[i] = axes[i][rand(axes[i])];
+    render(i, current[i]);
+  }
+  buildScenario();
+}
+
+function spinOne(idx) {
+  current[idx] = axes[idx][rand(axes[idx])];
+  render(idx, current[idx]);
+  buildScenario();
+}
+
+function clearAll() {
+  for (let i = 0; i < 3; i++) {
+    current[i] = null;
+    const el = document.getElementById('v' + i);
+    const card = document.getElementById('card' + i);
+    el.innerHTML = (i === 0) ? 'ボタンを押してスタート' : '—';
+    el.classList.add('empty');
+    card.classList.remove('lit');
+  }
+  document.getElementById('resultCard').classList.remove('show');
+  document.getElementById('judgeArea').classList.remove('show');
+}
+
+function addScore(pt) {
+  const team = document.getElementById('teamSelect').value;
+  const scenario = document.getElementById('resultText').textContent;
+  if (!team || !scenario) {
+    alert('チームを選択してください');
+    return;
+  }
+  scores.push({team, pt, scenario});
+  updateStats();
+  addHistory(team, pt, scenario);
+  document.getElementById('historyArea').classList.add('show');
+}
+
+function updateStats() {
+  const total = scores.reduce((a, b) => a + b.pt, 0);
+  document.getElementById('cntAvg').textContent = (total / scores.length).toFixed(1);
+  const teamTotals = {};
+  const teamCounts = {};
+  scores.forEach(s => {
+    teamTotals[s.team] = (teamTotals[s.team] || 0) + s.pt;
+    teamCounts[s.team] = (teamCounts[s.team] || 0) + 1;
+  });
+  const best = Object.entries(teamTotals).sort((a, b) => b[1] - a[1])[0];
+  if (best) {
+    const name = best[0].split('：')[1];
+    document.getElementById('cntBest').textContent = name;
+  }
+}
+
+function addHistory(team, pt, scenario) {
+  const list = document.getElementById('historyList');
+  const div = document.createElement('div');
+  div.className = 'history-item';
+  const short = scenario.length > 35 ? scenario.slice(0, 35) + '…' : scenario;
+  const scoreClass = 'hs' + pt;
+  div.innerHTML = '<div><span class="history-team">' + team.split('：')[1] + '</span><br>' + short + '</div>' +
+    '<div class="history-score ' + scoreClass + '">' + pt + 'pt</div>';
+  list.insertBefore(div, list.firstChild);
+}
+</script>
+</body>
+</html>
