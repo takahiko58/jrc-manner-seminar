@@ -7,328 +7,133 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Bebas+Neue&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0d0d0d;
-    --surface: #1a1a1a;
-    --surface2: #242424;
-    --border: #2e2e2e;
-    --accent: #e8c840;
-    --accent2: #e85540;
-    --text: #f0ede6;
-    --text-muted: #888;
-    --teal: #3ecfaa;
-    --purple: #9b7fe8;
+    --bg: #0d0d0d; --surface: #1a1a1a; --surface2: #242424; --border: #2e2e2e;
+    --accent: #e8c840; --accent2: #e85540; --text: #f0ede6; --text-muted: #888;
+    --teal: #3ecfaa; --purple: #9b7fe8;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Noto Sans JP', sans-serif;
-    min-height: 100vh;
-    padding: 0;
-  }
+  body { background: var(--bg); color: var(--text); font-family: 'Noto Sans JP', sans-serif; min-height: 100vh; }
 
-  /* Header */
-  .header {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 1.25rem 1.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-  .header-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 28px;
-    letter-spacing: 0.08em;
-    color: var(--accent);
-  }
-  .header-sub {
-    font-size: 11px;
-    color: var(--text-muted);
-    letter-spacing: 0.1em;
-    margin-top: 2px;
-  }
-  .pattern-count {
-    font-size: 12px;
-    color: var(--text-muted);
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 4px 12px;
-  }
-  .pattern-count span { color: var(--accent); font-weight: 700; }
+  .header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 1.25rem 1.5rem; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+  .header-title { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 0.08em; color: var(--accent); }
+  .header-sub { font-size: 11px; color: var(--text-muted); letter-spacing: 0.1em; margin-top: 2px; }
 
-  /* Main */
+  /* Round Toggle */
+  .round-toggle { display: flex; gap: 6px; }
+  .round-btn {
+    padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: 700;
+    cursor: pointer; border: 1px solid var(--border); background: var(--surface2);
+    color: var(--text-muted); transition: all 0.15s; font-family: 'Noto Sans JP', sans-serif;
+    letter-spacing: 0.05em;
+  }
+  .round-btn.active { background: var(--accent); color: #0d0d0d; border-color: var(--accent); }
+
   .main { max-width: 680px; margin: 0 auto; padding: 2rem 1.5rem; }
 
-  /* Cards grid */
-  .card-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin-bottom: 1.25rem;
-  }
-  .axis-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 14px;
-    position: relative;
-    overflow: hidden;
-    transition: border-color 0.2s;
-    min-height: 110px;
-    display: flex;
-    flex-direction: column;
-  }
-  .axis-card.lit { border-color: var(--accent); }
-  .axis-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-  }
-  .c1::before { background: #378ADD; }
-  .c2::before { background: var(--purple); }
-  .c3::before { background: var(--teal); }
+  /* Scenario Card */
+  .scenario-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; margin-bottom: 1.25rem; display: none; position: relative; overflow: hidden; }
+  .scenario-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--accent); }
+  .scenario-card.show { display: block; animation: fadeIn 0.3s ease; }
 
-  .axis-label {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    margin-bottom: 10px;
-  }
-  .c1 .axis-label { color: #378ADD; }
-  .c2 .axis-label { color: var(--purple); }
-  .c3 .axis-label { color: var(--teal); }
+  .scenario-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .scenario-tag { display: flex; align-items: center; gap: 6px; }
+  .scenario-num { background: var(--accent); color: #0d0d0d; font-family: 'Bebas Neue', sans-serif; font-size: 13px; padding: 1px 8px; border-radius: 4px; }
+  .scenario-tag-label { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; color: var(--accent); text-transform: uppercase; }
+  .redraw-scenario-btn { font-size: 11px; padding: 4px 10px; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; color: var(--text-muted); cursor: pointer; transition: all 0.15s; font-family: 'Noto Sans JP', sans-serif; }
+  .redraw-scenario-btn:hover { border-color: var(--accent); color: var(--accent); }
 
-  .axis-value {
-    font-size: 13px;
-    color: var(--text);
-    line-height: 1.5;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-  .axis-value.empty { color: var(--text-muted); font-size: 12px; }
-  .badge {
-    display: inline-block;
-    font-size: 10px;
-    font-weight: 700;
-    padding: 2px 8px;
-    border-radius: 20px;
-    margin-top: 6px;
-    letter-spacing: 0.05em;
-    width: fit-content;
-  }
-  .b-blue { background: rgba(55,138,221,0.15); color: #6ab4ff; border: 1px solid rgba(55,138,221,0.3); }
-  .b-purple { background: rgba(155,127,232,0.15); color: #b89fff; border: 1px solid rgba(155,127,232,0.3); }
-  .b-teal { background: rgba(62,207,170,0.15); color: #5ee8c5; border: 1px solid rgba(62,207,170,0.3); }
-  .b-coral { background: rgba(232,85,64,0.15); color: #ff8a78; border: 1px solid rgba(232,85,64,0.3); }
-  .b-amber { background: rgba(232,200,64,0.15); color: #ffd84d; border: 1px solid rgba(232,200,64,0.3); }
+  .scenario-company { font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+  .scenario-subtitle { font-size: 11px; color: var(--text-muted); margin-bottom: 14px; letter-spacing: 0.05em; }
+  .scenario-bg { font-size: 13px; color: #c8c4bc; line-height: 1.9; margin-bottom: 14px; padding: 12px 14px; background: var(--surface2); border-radius: 8px; border-left: 3px solid #333; white-space: pre-line; }
+  .fixed-axis { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+  .fixed-badge { font-size: 10px; padding: 3px 10px; border-radius: 20px; font-weight: 700; letter-spacing: 0.05em; }
+  .fb-blue { background: rgba(55,138,221,0.15); color: #6ab4ff; border: 1px solid rgba(55,138,221,0.3); }
+  .fb-purple { background: rgba(155,127,232,0.15); color: #b89fff; border: 1px solid rgba(155,127,232,0.3); }
+  .fb-teal { background: rgba(62,207,170,0.15); color: #5ee8c5; border: 1px solid rgba(62,207,170,0.3); }
 
-  /* Scenario result */
-  .result-card {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 1.25rem;
-    margin-bottom: 1.25rem;
-    display: none;
-    position: relative;
-    overflow: hidden;
-  }
-  .result-card::before {
-    content: '';
-    position: absolute;
-    left: 0; top: 0; bottom: 0;
-    width: 3px;
-    background: var(--accent);
-  }
-  .result-card.show { display: block; animation: fadeIn 0.3s ease; }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
-  .result-label {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    color: var(--accent);
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
-  .result-text {
-    font-size: 15px;
-    font-weight: 500;
-    color: var(--text);
-    line-height: 1.7;
-  }
+  /* State */
+  .state-section { border-top: 1px solid var(--border); padding-top: 14px; }
+  .state-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .state-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; color: var(--text-muted); text-transform: uppercase; }
+  .redraw-state-btn { font-size: 11px; padding: 4px 10px; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; color: var(--text-muted); cursor: pointer; transition: all 0.15s; font-family: 'Noto Sans JP', sans-serif; }
+  .redraw-state-btn:hover { border-color: var(--accent2); color: var(--accent2); }
+  .state-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; position: relative; overflow: hidden; }
+  .state-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--accent2); }
+  .state-icon { font-size: 20px; margin-bottom: 6px; }
+  .state-text { font-size: 14px; font-weight: 500; color: var(--text); line-height: 1.6; margin-bottom: 6px; }
+  .state-hint { font-size: 11px; color: var(--text-muted); line-height: 1.5; }
 
-  /* Spin button */
-  .spin-btn {
-    display: block;
-    width: 100%;
-    padding: 16px;
-    background: var(--accent);
-    color: #0d0d0d;
-    border: none;
-    border-radius: 12px;
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 22px;
-    letter-spacing: 0.12em;
-    cursor: pointer;
-    transition: background 0.15s, transform 0.1s;
-    margin-bottom: 10px;
-  }
+  /* Buttons */
+  .spin-btn { display: block; width: 100%; padding: 16px; background: var(--accent); color: #0d0d0d; border: none; border-radius: 12px; font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 0.12em; cursor: pointer; transition: background 0.15s, transform 0.1s; margin-bottom: 10px; }
   .spin-btn:hover { background: #f0d454; }
   .spin-btn:active { transform: scale(0.98); }
-
-  /* Sub buttons */
-  .sub-btns {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin-bottom: 1.5rem;
-  }
-  .sub-btn {
-    padding: 10px 12px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    font-size: 12px;
-    color: var(--text-muted);
-    cursor: pointer;
-    transition: all 0.15s;
-    font-family: 'Noto Sans JP', sans-serif;
-  }
-  .sub-btn:hover { border-color: #444; color: var(--text); background: var(--surface2); }
-
-  /* Judge section */
-  .section-title {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    margin-bottom: 10px;
-  }
-  .judge-area {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 1.25rem;
-    margin-bottom: 1rem;
-    display: none;
-  }
-  .judge-area.show { display: block; animation: fadeIn 0.3s ease; }
-
-  .team-select {
-    width: 100%;
-    padding: 10px 12px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    font-size: 14px;
-    color: var(--text);
-    margin-bottom: 12px;
-    font-family: 'Noto Sans JP', sans-serif;
-  }
-  .team-select:focus { outline: none; border-color: var(--accent); }
-
-  .score-btns {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 6px;
-  }
-  .score-btn {
-    padding: 10px 4px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    font-size: 18px;
-    font-weight: 700;
-    cursor: pointer;
-    text-align: center;
-    transition: all 0.15s;
-    font-family: 'Noto Sans JP', sans-serif;
-    color: var(--text);
-  }
-  .score-btn span { display: block; font-size: 9px; font-weight: 400; color: var(--text-muted); margin-top: 2px; }
-  .score-btn.s5:hover { background: rgba(62,207,170,0.2); border-color: var(--teal); color: var(--teal); }
-  .score-btn.s4:hover { background: rgba(62,207,170,0.1); border-color: #7fd4b8; color: #7fd4b8; }
-  .score-btn.s3:hover { background: rgba(232,200,64,0.1); border-color: var(--accent); color: var(--accent); }
-  .score-btn.s2:hover { background: rgba(232,85,64,0.1); border-color: #ff8a78; color: #ff8a78; }
-  .score-btn.s1:hover { background: rgba(232,85,64,0.2); border-color: var(--accent2); color: var(--accent2); }
+  .reset-btn { display: block; width: 100%; padding: 10px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; font-size: 12px; color: var(--text-muted); cursor: pointer; transition: all 0.15s; font-family: 'Noto Sans JP', sans-serif; margin-bottom: 1.5rem; }
+  .reset-btn:hover { border-color: #444; color: var(--text); }
 
   /* Stats */
-  .stats-bar {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin-bottom: 1.5rem;
-  }
-  .stat-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 12px;
-    text-align: center;
-  }
-  .stat-num {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 28px;
-    color: var(--accent);
-    letter-spacing: 0.05em;
-  }
-  .stat-label { font-size: 10px; color: var(--text-muted); margin-top: 2px; letter-spacing: 0.05em; }
+  .round-label { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
+  .stats-bar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 1.5rem; }
+  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px; text-align: center; }
+  .stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--accent); letter-spacing: 0.05em; }
+  .stat-label { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+
+  /* Judge */
+  .judge-area { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; display: none; }
+  .judge-area.show { display: block; animation: fadeIn 0.3s ease; }
+  .section-title { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; }
+  .team-select { width: 100%; padding: 10px 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; font-size: 14px; color: var(--text); margin-bottom: 12px; font-family: 'Noto Sans JP', sans-serif; }
+  .team-select:focus { outline: none; border-color: var(--accent); }
+  .score-btns { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+  .score-btn { padding: 10px 4px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; font-size: 18px; font-weight: 700; cursor: pointer; text-align: center; transition: all 0.15s; font-family: 'Noto Sans JP', sans-serif; color: var(--text); }
+  .score-btn span { display: block; font-size: 9px; font-weight: 400; color: var(--text-muted); margin-top: 2px; }
+  .score-btn.s5:hover,.score-btn.s5.selected { background: rgba(62,207,170,0.2); border-color: var(--teal); color: var(--teal); }
+  .score-btn.s4:hover,.score-btn.s4.selected { background: rgba(62,207,170,0.1); border-color: #7fd4b8; color: #7fd4b8; }
+  .score-btn.s3:hover,.score-btn.s3.selected { background: rgba(232,200,64,0.1); border-color: var(--accent); color: var(--accent); }
+  .score-btn.s2:hover,.score-btn.s2.selected { background: rgba(232,85,64,0.1); border-color: #ff8a78; color: #ff8a78; }
+  .score-btn.s1:hover,.score-btn.s1.selected { background: rgba(232,85,64,0.2); border-color: var(--accent2); color: var(--accent2); }
 
   /* History */
-  .history-area {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 1.25rem;
-    display: none;
-  }
+  .history-area { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; display: none; }
   .history-area.show { display: block; }
-  .history-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 0;
-    border-bottom: 1px solid var(--border);
-    font-size: 12px;
-    color: var(--text-muted);
-  }
+  .history-item { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 12px; color: var(--text-muted); }
   .history-item:last-child { border-bottom: none; }
-  .history-team { color: var(--text); font-weight: 500; white-space: nowrap; }
-  .history-score { font-family: 'Bebas Neue', sans-serif; font-size: 20px; white-space: nowrap; }
-  .hs5 { color: var(--teal); }
-  .hs4 { color: #7fd4b8; }
-  .hs3 { color: var(--accent); }
-  .hs2 { color: #ff8a78; }
-  .hs1 { color: var(--accent2); }
+  .history-left { flex: 1; }
+  .history-team { color: var(--text); font-weight: 500; }
+  .history-scenario { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+  .history-right { display: flex; align-items: center; gap: 8px; }
+  .history-score { font-family: 'Bebas Neue', sans-serif; font-size: 24px; min-width: 32px; text-align: right; }
+  .hs5{color:var(--teal);} .hs4{color:#7fd4b8;} .hs3{color:var(--accent);} .hs2{color:#ff8a78;} .hs1{color:var(--accent2);}
+  .edit-score-btn { font-size: 10px; padding: 3px 8px; background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; color: var(--text-muted); cursor: pointer; transition: all 0.15s; font-family: 'Noto Sans JP', sans-serif; white-space: nowrap; }
+  .edit-score-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .delete-score-btn { font-size: 10px; padding: 3px 8px; background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; color: var(--text-muted); cursor: pointer; transition: all 0.15s; font-family: 'Noto Sans JP', sans-serif; }
+  .delete-score-btn:hover { border-color: var(--accent2); color: var(--accent2); }
 
-  /* Divider */
+  /* Edit modal */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; display: none; align-items: center; justify-content: center; }
+  .modal-overlay.show { display: flex; }
+  .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; width: 90%; max-width: 360px; }
+  .modal-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 14px; }
+  .modal-team { font-size: 12px; color: var(--text-muted); margin-bottom: 12px; }
+  .modal-score-btns { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-bottom: 14px; }
+  .modal-cancel { width: 100%; padding: 10px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; font-size: 12px; color: var(--text-muted); cursor: pointer; font-family: 'Noto Sans JP', sans-serif; }
+  .modal-cancel:hover { border-color: #444; color: var(--text); }
+
+  /* Leaderboard */
+  .leaderboard { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; display: none; }
+  .leaderboard.show { display: block; }
+  .lb-row { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+  .lb-row:last-child { border-bottom: none; }
+  .lb-rank { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--text-muted); min-width: 24px; }
+  .lb-rank.r1 { color: #FFD700; } .lb-rank.r2 { color: #C0C0C0; } .lb-rank.r3 { color: #CD7F32; }
+  .lb-team { flex: 1; font-size: 13px; font-weight: 500; color: var(--text); }
+  .lb-scores { font-size: 11px; color: var(--text-muted); }
+  .lb-total { font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: var(--accent); }
+
   .divider { border: none; border-top: 1px solid var(--border); margin: 1.25rem 0; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 
-  /* Spinning animation */
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
-  }
-  .spinning .axis-value { animation: pulse 0.4s ease infinite; }
-
-  /* Responsive */
   @media (max-width: 480px) {
-    .card-grid { grid-template-columns: 1fr; gap: 8px; }
-    .main { padding: 1rem; }
-    .header { padding: 1rem; }
-    .header-title { font-size: 22px; }
-    .score-btns { grid-template-columns: repeat(5, 1fr); }
+    .main { padding: 1rem; } .header { padding: 1rem; } .header-title { font-size: 22px; }
   }
 </style>
 </head>
@@ -339,63 +144,60 @@
     <div class="header-title">JRC MANNER BATTLE</div>
     <div class="header-sub">ビジネスマナー ロールプレイ対抗戦</div>
   </div>
-  <div class="pattern-count"><span>180</span> パターン</div>
+  <div class="round-toggle">
+    <button class="round-btn active" id="btn-r1" onclick="setRound(1)">1回目</button>
+    <button class="round-btn" id="btn-r2" onclick="setRound(2)">2回目</button>
+  </div>
 </div>
 
 <div class="main">
 
-  <!-- Axis Cards -->
-  <div class="card-grid" id="cardGrid">
-    <div class="axis-card c1" id="card0">
-      <div class="axis-label">📍 場所・相手</div>
-      <div class="axis-value empty" id="v0">ボタンを押してスタート</div>
+  <!-- Scenario Card -->
+  <div class="scenario-card" id="scenarioCard">
+    <div class="scenario-header">
+      <div class="scenario-tag">
+        <span id="scenarioNum" class="scenario-num">S1</span>
+        <span class="scenario-tag-label">シナリオ</span>
+      </div>
+      <button class="redraw-scenario-btn" onclick="redrawScenario()">🔄 シナリオ引き直し</button>
     </div>
-    <div class="axis-card c2" id="card1">
-      <div class="axis-label">🤝 関係性</div>
-      <div class="axis-value empty" id="v1">—</div>
-    </div>
-    <div class="axis-card c3" id="card2">
-      <div class="axis-label">🎯 目的・ミッション</div>
-      <div class="axis-value empty" id="v2">—</div>
+    <div class="scenario-company" id="scenarioCompany"></div>
+    <div class="scenario-subtitle" id="scenarioSubtitle"></div>
+    <div class="scenario-bg" id="scenarioBg"></div>
+    <div class="fixed-axis" id="fixedAxis"></div>
+    <div class="state-section">
+      <div class="state-header">
+        <div class="state-label">🎲 相手の状態</div>
+        <button class="redraw-state-btn" onclick="redrawState()">🔄 引き直し</button>
+      </div>
+      <div class="state-card" id="stateCard">
+        <div class="state-icon" id="stateIcon"></div>
+        <div class="state-text" id="stateText"></div>
+        <div class="state-hint" id="stateHint"></div>
+      </div>
     </div>
   </div>
 
-  <!-- Result -->
-  <div class="result-card" id="resultCard">
-    <div class="result-label">▶ 今回のシナリオ</div>
-    <div class="result-text" id="resultText"></div>
-  </div>
-
-  <!-- Spin -->
-  <button class="spin-btn" onclick="spin()">🎲 シチュエーションを引く</button>
-
-  <!-- Sub buttons -->
-  <div class="sub-btns">
-    <button class="sub-btn" onclick="spinOne(0)">📍 場所だけ変える</button>
-    <button class="sub-btn" onclick="spinOne(1)">🤝 関係性だけ変える</button>
-    <button class="sub-btn" onclick="spinOne(2)">🎯 目的だけ変える</button>
-    <button class="sub-btn" onclick="clearAll()">↺ リセット</button>
-  </div>
+  <button class="spin-btn" onclick="spin()">🎲 シナリオを引く</button>
+  <button class="reset-btn" onclick="clearAll()">↺ リセット</button>
 
   <!-- Stats -->
+  <div class="round-label" id="statsLabel">1回目　スコア</div>
   <div class="stats-bar">
-    <div class="stat-card">
-      <div class="stat-num" id="cntTotal">0</div>
-      <div class="stat-label">総試行数</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-num" id="cntAvg">—</div>
-      <div class="stat-label">平均点</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-num" id="cntBest" style="font-size:14px; padding-top:6px;">—</div>
-      <div class="stat-label">最高点チーム</div>
-    </div>
+    <div class="stat-card"><div class="stat-num" id="cntTotal">0</div><div class="stat-label">採点数</div></div>
+    <div class="stat-card"><div class="stat-num" id="cntAvg">—</div><div class="stat-label">平均点</div></div>
+    <div class="stat-card"><div class="stat-num" id="cntBest" style="font-size:13px;padding-top:8px;">—</div><div class="stat-label">現在トップ</div></div>
+  </div>
+
+  <!-- Leaderboard -->
+  <div class="leaderboard" id="leaderboard">
+    <div class="section-title">🏆 順位表（1回目＋2回目 合計）</div>
+    <div id="lbList"></div>
   </div>
 
   <!-- Judge -->
   <div class="judge-area" id="judgeArea">
-    <div class="section-title">⚖️ 審査員採点</div>
+    <div class="section-title" id="judgeTitle">⚖️ 審査員採点　—　1回目</div>
     <select class="team-select" id="teamSelect">
       <option value="">チームを選択...</option>
       <option>チーム1：佐々木 × 安藤</option>
@@ -407,7 +209,7 @@
       <option>チーム7：望月 × 中幹</option>
       <option>チーム8：中智 × 三澤</option>
     </select>
-    <div class="score-btns">
+    <div class="score-btns" id="scoreBtns">
       <button class="score-btn s5" onclick="addScore(5)">5<span>完璧</span></button>
       <button class="score-btn s4" onclick="addScore(4)">4<span>良い</span></button>
       <button class="score-btn s3" onclick="addScore(3)">3<span>普通</span></button>
@@ -419,131 +221,242 @@
   <!-- History -->
   <div class="history-area" id="historyArea">
     <hr class="divider">
-    <div class="section-title">📋 採点履歴</div>
+    <div class="section-title" id="historyTitle">📋 採点履歴　—　1回目</div>
     <div id="historyList"></div>
   </div>
 
 </div>
 
+<!-- Edit Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-title">採点を修正する</div>
+    <div class="modal-team" id="modalTeamLabel"></div>
+    <div class="modal-score-btns">
+      <button class="score-btn s5" onclick="confirmEdit(5)">5<span>完璧</span></button>
+      <button class="score-btn s4" onclick="confirmEdit(4)">4<span>良い</span></button>
+      <button class="score-btn s3" onclick="confirmEdit(3)">3<span>普通</span></button>
+      <button class="score-btn s2" onclick="confirmEdit(2)">2<span>要改善</span></button>
+      <button class="score-btn s1" onclick="confirmEdit(1)">1<span>NG</span></button>
+    </div>
+    <button class="modal-cancel" onclick="closeModal()">キャンセル</button>
+  </div>
+</div>
+
 <script>
-const axes = [
-  [
-    {text: "取引先の会社（初訪問）", badge: "社外", cls: "b-blue"},
-    {text: "取引先の会社（既存顧客）", badge: "社外", cls: "b-blue"},
-    {text: "JRC社内（事務所）", badge: "社内", cls: "b-purple"},
-    {text: "現場（工事中）", badge: "現場", cls: "b-amber"},
-    {text: "現場（竣工検査時）", badge: "現場", cls: "b-amber"},
-    {text: "懇親会・食事の場", badge: "非公式", cls: "b-coral"},
-  ],
-  [
-    {text: "初めて会う相手", badge: "初対面", cls: "b-blue"},
-    {text: "事故・トラブルの直後", badge: "緊急", cls: "b-coral"},
-    {text: "久しぶりの再会（1年以上）", badge: "久々", cls: "b-purple"},
-    {text: "毎月会っている顔なじみ", badge: "常連", cls: "b-teal"},
-    {text: "クレームを入れてきた相手", badge: "クレーム", cls: "b-coral"},
-  ],
-  [
-    {text: "JRCのPR・営業提案をする", badge: "営業", cls: "b-teal"},
-    {text: "金額・条件を交渉する", badge: "交渉", cls: "b-purple"},
-    {text: "工事の依頼・受注をお願いする", badge: "受注", cls: "b-blue"},
-    {text: "ミス・事故の謝罪をする", badge: "謝罪", cls: "b-coral"},
-    {text: "ご挨拶・関係構築のみ", badge: "挨拶", cls: "b-amber"},
-    {text: "クレームに対して誠実に対応する", badge: "対応", cls: "b-coral"},
-  ]
+const scenarios = [
+  {
+    id:"S1", company:"きんでん", subtitle:"電気サブコン最大手 ／ 初訪問・営業", difficulty:"★★☆",
+    bg:"電気サブコンの最大手・きんでん。これまでJRCとの直接取引はなかったが、先月、共通の知人を通じてアポが取れた。きんでんほどの会社から電気内線工事の下請けとして声をかけてもらえれば、JRCの実績と信頼が一気に上がる。ただ、きんでんはJRCにとってライバル元請でもある。相手もそれをわかった上で会ってくれている。どこまで踏み込んで話をするか、空気を読みながら進めなければならない。\n\n受付を済ませ、応接室に通された。もうすぐ田中部長が入ってくる。",
+    fixedBadges:[{text:"📍 取引先（初訪問）",cls:"fb-blue"},{text:"🤝 初対面",cls:"fb-blue"},{text:"🎯 PR・営業",cls:"fb-teal"}],
+    states:[
+      {icon:"⏱️",text:"入室してくるなり「忙しいから10分で頼む」と言われる",hint:"限られた時間で何を伝えるか、優先順位が問われる"},
+      {icon:"😐",text:"着席しても無表情・無口で、こちらの話にほとんど反応しない",hint:"相手の関心を引き出せるか、一方的な説明になっていないか"},
+      {icon:"⚔️",text:"開口一番「うちとJRCさんって、競合になる場面もありますよね」と探りを入れてくる",hint:"競合関係を認めつつ、協力関係の価値をどう伝えるか"}
+    ]
+  },
+  {
+    id:"S2", company:"関電工", subtitle:"電気最大手 ／ クレーム対応・謝罪", difficulty:"★★★",
+    bg:"電気の最大手・関電工。電気・土木両方で仕事をもらっている大切な取引先。今回は電気工事での話。下請けが施工ミスをしたが、JRCへの報告が遅れ、関電工の担当・鈴木部長の耳に施主から直接入ってしまった。「なんでうちが施主から直接聞かなきゃいけないんだ」と激怒している。今日、謝罪と経緯説明のために訪問した。\n\n玄関で鈴木部長が腕を組んで待っている。",
+    fixedBadges:[{text:"📍 取引先（既存）",cls:"fb-blue"},{text:"🤝 クレーム",cls:"fb-purple"},{text:"🎯 謝罪・対応",cls:"fb-teal"}],
+    states:[
+      {icon:"😡",text:"玄関で開口一番「どういう管理してるんだ！」と声を荒げてくる",hint:"感情的な相手に対して、まず何をすべきか"},
+      {icon:"🧊",text:"応接室で冷静な顔のまま「正直、JRCさんへの信頼が揺らいでいます」と静かに言う",hint:"静かな怒りは激しい怒りより深刻。どう受け止めるか"},
+      {icon:"🔍",text:"怒りは落ち着いているが「経緯を一から全部説明してください」と事実確認を強く求めてくる",hint:"正確な5W1Hで答えられるか。言い訳になっていないか"}
+    ]
+  },
+  {
+    id:"S3", company:"トーエネック", subtitle:"電気・土木 ／ 現場トラブル報告", difficulty:"★★★",
+    bg:"トーエネックとは電気・土木両方で仕事をしている。今回は電気土木の現場。午前中の作業でハンドホールの据付高さを間違えてしまった。建築との取り合いがある箇所で、本日中に修正しなければ翌日以降の工程が全て止まる。発覚した時点ですぐ報告すべきだったが、自分たちで何とかなるかと思って時間が経ってしまった。今は午後。現場監督の中村さんは現場事務所にいる。もう限界、今すぐ報告しなければならない。",
+    fixedBadges:[{text:"📍 現場事務所",cls:"fb-blue"},{text:"🤝 午前発生→午後報告",cls:"fb-purple"},{text:"🎯 報告・対応確認",cls:"fb-teal"}],
+    states:[
+      {icon:"👁️",text:"事務所に入るなり「おい、何かあったんじゃないか？」とすでに勘づいている",hint:"すでに察知されている。正直に・素早く・結論から話せるか"},
+      {icon:"📋",text:"忙しそうに書類を広げていて「今ちょっと立て込んでる、手短に頼む」と言われる",hint:"端的に状況を伝えられるか。重要度を正確に伝えられるか"},
+      {icon:"📢",text:"別の作業員からすでに話を聞いていたようで「話は聞いた。詳しく説明してくれ」と言われる",hint:"第三者経由で情報が伝わってしまっている。信頼をどう回復するか"}
+    ]
+  },
+  {
+    id:"S4", company:"東邦電気工業", subtitle:"電気・土木 ／ 竣工検査・関係構築", difficulty:"★★☆",
+    bg:"東邦電気工業とは電気・土木両方で仕事をしている。長年JRCびいきだった山田部長が異動になり、今日の竣工検査が新しい部長・木村さんとの初めての現場同行になる。木村さんはJRCのことをほとんど知らない。白紙の状態から関係を作らなければならない。今日の竣工検査の印象が、次の受注を左右する。\n\n検査が一通り終わり、木村部長と二人になった。",
+    fixedBadges:[{text:"📍 現場（竣工検査）",cls:"fb-blue"},{text:"🤝 新担当・実質初対面",cls:"fb-purple"},{text:"🎯 関係構築・受注",cls:"fb-teal"}],
+    states:[
+      {icon:"😤",text:"「今回の仕上がりなんだけど、気になるところがいくつかあってね」と指摘してくる",hint:"初対面で指摘を受けた。防御的にならず、誠実に受け止められるか"},
+      {icon:"🏁",text:"世間話の流れで「うちは複数社さんにお声がけするようにしてるんですよ」とさりげなく言う",hint:"競合がいることを示唆されている。焦らず自社の強みを伝えられるか"},
+      {icon:"😶",text:"無難に検査を終えたが、次の話題を振っても「そうですねえ」と反応が薄い",hint:"関心を引き出せていない。何が刺さるか、ヒアリングしながら探れるか"}
+    ]
+  },
+  {
+    id:"S5", company:"日鉄PE", subtitle:"土木 ／ 懇親会・関係再構築", difficulty:"★☆☆",
+    bg:"日鉄PE（日鉄パイプライン＆エンジニアリング）とは都市ガスの仕事で面識はあるが、最近は疎遠になっていた。今後は水素インフラの工事が急増する見込みで、日鉄PEとの関係を深めることができれば収益性の高い仕事につながる可能性がある。向こうも新規開拓を模索しているという情報が入っている。\n\n今日の業界懇親会で、日鉄PEの佐々木さんが来ているのを見つけた。今がチャンスだ。",
+    fixedBadges:[{text:"📍 懇親会・食事",cls:"fb-blue"},{text:"🤝 疎遠・久々",cls:"fb-purple"},{text:"🎯 関係再構築・布石",cls:"fb-teal"}],
+    states:[
+      {icon:"📱",text:"席についてもスマホをずっと見ていて、こちらに気づいていない様子",hint:"どうやって自然に会話に入るか。唐突にならない切り出し方ができるか"},
+      {icon:"🗣️",text:"話しかけると思いのほか積極的で、こちらのことを根掘り葉掘り聞いてくる",hint:"一方的に聞かれ続ける状況。自分からも相手への関心を示せるか"},
+      {icon:"👥",text:"近くにいた別の参加者と盛り上がっていて、会話に割り込みにくい雰囲気",hint:"空気を読みながら、自然なタイミングで入れるか"}
+    ]
+  }
 ];
 
-let current = [null, null, null];
-let scores = [];
-let totalSpins = 0;
+const TEAMS = ["チーム1：佐々木 × 安藤","チーム2：トゥアン × 松井","チーム3：岩本 × 木谷","チーム4：堀田 × ドン","チーム5：吉村 × 鴨志田","チーム6：深澤 × 岩沢","チーム7：望月 × 中幹","チーム8：中智 × 三澤"];
 
-function rand(arr) { return Math.floor(Math.random() * arr.length); }
+let currentRound = 1;
+let currentScenario = null;
+let currentState = null;
+let scores = { 1: [], 2: [] }; // {team, pt, label, id}
+let editingId = null;
+let scoreIdCounter = 0;
 
-function render(idx, item) {
-  const el = document.getElementById('v' + idx);
-  const card = document.getElementById('card' + idx);
-  el.innerHTML = item.text + '<br><span class="badge ' + item.cls + '">' + item.badge + '</span>';
-  el.classList.remove('empty');
-  card.classList.add('lit');
+function rand(arr){ return Math.floor(Math.random() * arr.length); }
+
+function setRound(r){
+  currentRound = r;
+  document.getElementById('btn-r1').classList.toggle('active', r===1);
+  document.getElementById('btn-r2').classList.toggle('active', r===2);
+  document.getElementById('statsLabel').textContent = r + '回目　スコア';
+  document.getElementById('judgeTitle').textContent = '⚖️ 審査員採点　—　' + r + '回目';
+  document.getElementById('historyTitle').textContent = '📋 採点履歴　—　' + r + '回目';
+  updateStats();
+  renderHistory();
+  updateLeaderboard();
 }
 
-function buildScenario() {
-  if (!current[0] || !current[1] || !current[2]) return;
-  const s = '【' + current[0].badge + '】' + current[0].text + ' で、' + current[1].text + '（' + current[1].badge + '）に対して、' + current[2].text;
-  document.getElementById('resultText').textContent = s;
-  document.getElementById('resultCard').classList.add('show');
+function spin(){
+  const s = scenarios[rand(scenarios)];
+  currentScenario = s;
+  renderScenario(s);
+  drawStateFor(s);
+  document.getElementById('scenarioCard').classList.add('show');
   document.getElementById('judgeArea').classList.add('show');
+  document.getElementById('scenarioCard').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
-function spin() {
-  totalSpins++;
-  document.getElementById('cntTotal').textContent = totalSpins;
-  const grid = document.getElementById('cardGrid');
-  grid.classList.add('spinning');
-  setTimeout(() => grid.classList.remove('spinning'), 400);
-  for (let i = 0; i < 3; i++) {
-    current[i] = axes[i][rand(axes[i])];
-    render(i, current[i]);
-  }
-  buildScenario();
+function redrawScenario(){
+  const s = scenarios[rand(scenarios)];
+  currentScenario = s;
+  renderScenario(s);
+  drawStateFor(s);
 }
 
-function spinOne(idx) {
-  current[idx] = axes[idx][rand(axes[idx])];
-  render(idx, current[idx]);
-  buildScenario();
+function renderScenario(s){
+  document.getElementById('scenarioNum').textContent = s.id;
+  document.getElementById('scenarioCompany').textContent = s.company;
+  document.getElementById('scenarioSubtitle').textContent = s.subtitle + '　難易度 ' + s.difficulty;
+  document.getElementById('scenarioBg').textContent = s.bg;
+  document.getElementById('fixedAxis').innerHTML = s.fixedBadges.map(b=>`<span class="fixed-badge ${b.cls}">${b.text}</span>`).join('');
 }
 
-function clearAll() {
-  for (let i = 0; i < 3; i++) {
-    current[i] = null;
-    const el = document.getElementById('v' + i);
-    const card = document.getElementById('card' + i);
-    el.innerHTML = (i === 0) ? 'ボタンを押してスタート' : '—';
-    el.classList.add('empty');
-    card.classList.remove('lit');
-  }
-  document.getElementById('resultCard').classList.remove('show');
+function drawStateFor(s){
+  const state = s.states[rand(s.states)];
+  currentState = state;
+  document.getElementById('stateIcon').textContent = state.icon;
+  document.getElementById('stateText').textContent = state.text;
+  document.getElementById('stateHint').textContent = '💡 ' + state.hint;
+}
+
+function redrawState(){
+  if(!currentScenario) return;
+  drawStateFor(currentScenario);
+}
+
+function clearAll(){
+  currentScenario = null; currentState = null;
+  document.getElementById('scenarioCard').classList.remove('show');
   document.getElementById('judgeArea').classList.remove('show');
 }
 
-function addScore(pt) {
+function addScore(pt){
   const team = document.getElementById('teamSelect').value;
-  const scenario = document.getElementById('resultText').textContent;
-  if (!team || !scenario) {
-    alert('チームを選択してください');
-    return;
-  }
-  scores.push({team, pt, scenario});
+  if(!team){ alert('チームを選択してください'); return; }
+  if(!currentScenario){ alert('シナリオを引いてください'); return; }
+  const label = currentScenario.company + (currentState ? ' / ' + currentState.text.slice(0,18) + '…' : '');
+  const entry = { id: ++scoreIdCounter, team, pt, label, round: currentRound };
+  scores[currentRound].push(entry);
   updateStats();
-  addHistory(team, pt, scenario);
-  document.getElementById('historyArea').classList.add('show');
+  renderHistory();
+  updateLeaderboard();
+  // Flash selected button
+  const btns = document.getElementById('scoreBtns').querySelectorAll('.score-btn');
+  btns.forEach(b => b.classList.remove('selected'));
+  btns[5-pt].classList.add('selected');
+  setTimeout(()=> btns[5-pt].classList.remove('selected'), 600);
 }
 
-function updateStats() {
-  const total = scores.reduce((a, b) => a + b.pt, 0);
-  document.getElementById('cntAvg').textContent = (total / scores.length).toFixed(1);
-  const teamTotals = {};
-  const teamCounts = {};
-  scores.forEach(s => {
-    teamTotals[s.team] = (teamTotals[s.team] || 0) + s.pt;
-    teamCounts[s.team] = (teamCounts[s.team] || 0) + 1;
-  });
-  const best = Object.entries(teamTotals).sort((a, b) => b[1] - a[1])[0];
-  if (best) {
-    const name = best[0].split('：')[1];
-    document.getElementById('cntBest').textContent = name;
-  }
+function updateStats(){
+  const list = scores[currentRound];
+  document.getElementById('cntTotal').textContent = list.length;
+  if(!list.length){ document.getElementById('cntAvg').textContent='—'; document.getElementById('cntBest').textContent='—'; return; }
+  const avg = list.reduce((a,b)=>a+b.pt,0)/list.length;
+  document.getElementById('cntAvg').textContent = avg.toFixed(1);
+  const totals = {};
+  list.forEach(s=>{ totals[s.team]=(totals[s.team]||0)+s.pt; });
+  const best = Object.entries(totals).sort((a,b)=>b[1]-a[1])[0];
+  if(best) document.getElementById('cntBest').textContent = best[0].split('：')[1];
 }
 
-function addHistory(team, pt, scenario) {
+function renderHistory(){
   const list = document.getElementById('historyList');
-  const div = document.createElement('div');
-  div.className = 'history-item';
-  const short = scenario.length > 35 ? scenario.slice(0, 35) + '…' : scenario;
-  const scoreClass = 'hs' + pt;
-  div.innerHTML = '<div><span class="history-team">' + team.split('：')[1] + '</span><br>' + short + '</div>' +
-    '<div class="history-score ' + scoreClass + '">' + pt + 'pt</div>';
-  list.insertBefore(div, list.firstChild);
+  const data = [...scores[currentRound]].reverse();
+  if(!data.length){ document.getElementById('historyArea').classList.remove('show'); return; }
+  document.getElementById('historyArea').classList.add('show');
+  list.innerHTML = data.map(s => `
+    <div class="history-item" id="hi-${s.id}">
+      <div class="history-left">
+        <div class="history-team">${s.team.split('：')[1]}</div>
+        <div class="history-scenario">${s.label}</div>
+      </div>
+      <div class="history-right">
+        <button class="edit-score-btn" onclick="openEdit(${s.id})">修正</button>
+        <button class="delete-score-btn" onclick="deleteScore(${s.id})">削除</button>
+        <div class="history-score hs${s.pt}">${s.pt}pt</div>
+      </div>
+    </div>`).join('');
+}
+
+function deleteScore(id){
+  scores[1] = scores[1].filter(s=>s.id!==id);
+  scores[2] = scores[2].filter(s=>s.id!==id);
+  updateStats(); renderHistory(); updateLeaderboard();
+}
+
+function openEdit(id){
+  const entry = [...scores[1],...scores[2]].find(s=>s.id===id);
+  if(!entry) return;
+  editingId = id;
+  document.getElementById('modalTeamLabel').textContent = entry.team.split('：')[1] + '　現在：' + entry.pt + 'pt';
+  document.getElementById('modalOverlay').classList.add('show');
+}
+
+function confirmEdit(pt){
+  if(editingId===null) return;
+  [1,2].forEach(r=>{ const e=scores[r].find(s=>s.id===editingId); if(e) e.pt=pt; });
+  closeModal();
+  updateStats(); renderHistory(); updateLeaderboard();
+}
+
+function closeModal(){
+  editingId=null;
+  document.getElementById('modalOverlay').classList.remove('show');
+}
+
+function updateLeaderboard(){
+  const totals = {};
+  const r1map = {}, r2map = {};
+  TEAMS.forEach(t=>{ totals[t]=0; r1map[t]='-'; r2map[t]='-'; });
+  scores[1].forEach(s=>{ totals[s.team]=(totals[s.team]||0)+s.pt; r1map[s.team]=((r1map[s.team]==='-'?0:r1map[s.team])+s.pt); });
+  scores[2].forEach(s=>{ totals[s.team]=(totals[s.team]||0)+s.pt; r2map[s.team]=((r2map[s.team]==='-'?0:r2map[s.team])+s.pt); });
+  const ranked = Object.entries(totals).sort((a,b)=>b[1]-a[1]);
+  const lb = document.getElementById('leaderboard');
+  const hasScores = scores[1].length>0 || scores[2].length>0;
+  if(!hasScores){ lb.classList.remove('show'); return; }
+  lb.classList.add('show');
+  const rankClasses = ['r1','r2','r3'];
+  document.getElementById('lbList').innerHTML = ranked.map(([team,total],i)=>`
+    <div class="lb-row">
+      <div class="lb-rank ${rankClasses[i]||''}">${i+1}</div>
+      <div class="lb-team">${team.split('：')[1]}</div>
+      <div class="lb-scores">1回目:${r1map[team]}　2回目:${r2map[team]}</div>
+      <div class="lb-total">${total}pt</div>
+    </div>`).join('');
 }
 </script>
 </body>
